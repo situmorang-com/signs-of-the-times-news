@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtered News Articles</title>
+    <!-- Add CSS for styling -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .navbar h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button-container button:hover {
+            background-color: #555;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .search-container input[type="text"] {
+            width: 75%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-container button {
+            padding: 8px 16px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-container button:hover {
+            background-color: #555;
+        }
+
+        .article {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .article h2 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+
+        .article p {
+            margin: 0 0 10px;
+            color: #666;
+        }
+
+        .article a {
+            text-decoration: none;
+            color: #1a73e8;
+        }
+
+        .article a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .button-container, .search-container {
+                flex-direction: column;
+            }
+
+            .search-container input[type="text"] {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .button-container button, .search-container button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <h1>Filtered News Articles</h1>
+    </div>
+
+    <div class="container">
+        <!-- Control Buttons -->
+        <div class="button-container">
+            <button onclick="window.location.href='/collect-data'">Collect New Data</button>
+            <button onclick="window.location.href='/filter-data'">Filter Collected Data</button>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for articles...">
+            <button onclick="searchArticles()">Search</button>
+        </div>
+
+        <!-- Articles Section -->
+        {% if articles %}
+            {% for article in articles %}
+                <div class="article">
+                    <h2>{{ article[0] }}</h2> <!-- Title -->
+                    <p>{{ article[1] }}</p> <!-- Content -->
+                    <a href="{{ article[2] }}" target="_blank">Read more</a> <!-- URL -->
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No articles available with a relevance score greater than 2.</p>
+        {% endif %}
+    </div>
+
+    <!-- JavaScript for Search Functionality -->
+    <script>
+        function searchArticles() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const articles = document.querySelectorAll('.article');
+
+            articles.forEach(article => {
+                const title = article.querySelector('h2').innerText.toLowerCase();
+                const content = article.querySelector('p').innerText.toLowerCase();
+
+                if (title.includes(searchInput) || content.includes(searchInput)) {
+                    article.style.display = 'block';
+                } else {
+                    article.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
