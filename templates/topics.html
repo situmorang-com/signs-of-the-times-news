@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventist News Topics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Adventist News Topics</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('topics') }}">Topics</a>
+        </nav>
+    </header>
+
+    <main>
+        {% for topic, articles in articles_by_topic.items() %}
+            <section>
+                <h2>{{ topic }}</h2>
+                {% for article in articles %}
+                    <article>
+                        <h3>{{ article.title }}</h3>
+                        <p>Relevance Score: {{ article.relevance_score|round(2) }}</p>
+                        <p>{{ article.content[:200] }}...</p>
+                        <a href="{{ article.url }}" target="_blank">Read more</a>
+                    </article>
+                {% endfor %}
+            </section>
+        {% endfor %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adventist News Filtering System</p>
+    </footer>
+</body>
+</html>

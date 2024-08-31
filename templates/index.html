@@ -5,17 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filtered News Articles</title>
-    <!-- Add CSS for styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        /* Improved Styling */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
         }
 
         .navbar {
-            background-color: #333;
+            background-color: #1a73e8;
             color: #fff;
             padding: 1rem;
             text-align: center;
@@ -25,99 +27,127 @@
             margin: 0;
         }
 
+        .navbar nav {
+            margin-top: 0.5rem;
+        }
+
+        .navbar nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        .navbar nav a:hover {
+            text-decoration: underline;
+        }
+
         .container {
-            max-width: 800px;
-            margin: 20px auto;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
             background-color: #fff;
-            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-container form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container input[type="text"], .form-container select {
+            padding: 0.75rem;
+            margin-right: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+        }
+
+        .form-container button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .form-container button:hover {
+            background-color: #1557b0;
         }
 
         .button-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            text-align: center;
+            margin-bottom: 2rem;
         }
 
         .button-container button {
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            background-color: #1a73e8;
+            color: white;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            border-radius: 4px;
+            margin: 0 1rem;
         }
 
         .button-container button:hover {
-            background-color: #555;
-        }
-
-        .search-container {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .search-container input[type="text"] {
-            width: 75%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .search-container button {
-            padding: 8px 16px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .search-container button:hover {
-            background-color: #555;
+            background-color: #1557b0;
         }
 
         .article {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-bottom: 1px solid #ccc;
+            background-color: #f4f4f4;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
         }
 
         .article h2 {
-            margin: 0 0 10px;
-            color: #333;
+            margin-top: 0;
+            color: #1a73e8;
         }
 
         .article p {
-            margin: 0 0 10px;
-            color: #666;
+            color: #555;
         }
 
         .article a {
-            text-decoration: none;
             color: #1a73e8;
+            text-decoration: none;
+            font-weight: bold;
         }
 
         .article a:hover {
             text-decoration: underline;
         }
 
-        @media (max-width: 600px) {
-            .button-container, .search-container {
-                flex-direction: column;
-            }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
 
-            .search-container input[type="text"] {
-                width: 100%;
-                margin-bottom: 10px;
-            }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
 
-            .button-container button, .search-container button {
-                width: 100%;
-            }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </head>
@@ -125,19 +155,41 @@
     <!-- Navigation Bar -->
     <div class="navbar">
         <h1>Filtered News Articles</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('topics') }}">Topics</a>
+        </nav>
     </div>
 
     <div class="container">
+        <!-- Display Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- Form to Search for News -->
+        <div class="form-container">
+            <form action="/search" method="POST">
+                <input type="text" name="keyword" placeholder="Search for news..." required>
+                <select name="date_range">
+                    <option value="all">All Time</option>
+                    <option value="last_week">Last Week</option>
+                    <option value="last_month">Last Month</option>
+                </select>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
         <!-- Control Buttons -->
         <div class="button-container">
             <button onclick="window.location.href='/collect-data'">Collect New Data</button>
             <button onclick="window.location.href='/filter-data'">Filter Collected Data</button>
-        </div>
-
-        <!-- Search and Filter Section -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search for articles...">
-            <button onclick="searchArticles()">Search</button>
         </div>
 
         <!-- Articles Section -->
@@ -153,24 +205,5 @@
             <p>No articles available with a relevance score greater than 2.</p>
         {% endif %}
     </div>
-
-    <!-- JavaScript for Search Functionality -->
-    <script>
-        function searchArticles() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const articles = document.querySelectorAll('.article');
-
-            articles.forEach(article => {
-                const title = article.querySelector('h2').innerText.toLowerCase();
-                const content = article.querySelector('p').innerText.toLowerCase();
-
-                if (title.includes(searchInput) || content.includes(searchInput)) {
-                    article.style.display = 'block';
-                } else {
-                    article.style.display = 'none';
-                }
-            });
-        }
-    </script>
 </body>
 </html>
