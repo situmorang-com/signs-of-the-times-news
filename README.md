@@ -1,8 +1,4 @@
-Here's a **README** file for your news filtering system that aligns with the Adventist view of "signs of the times" and the Sunday law. This README will help others understand the purpose of the system, how to set it up, and how to use it effectively.
 
-### `README.md`
-
-```markdown
 # Signs of the Times News Filtering System
 
 This system is designed to filter news articles related to "signs of the times" that align with the Adventist view of the Sunday law. It allows users to search and filter news articles based on different criteria, such as keywords, date range, sentiment, and relevance score.
@@ -137,14 +133,3 @@ To contribute to this project:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
-
-### Key Points
-
-- **Features**: Summarizes the functionalities of your system.
-- **Getting Started**: Provides steps for setting up the project.
-- **Usage**: Instructions on how to use the application.
-- **File Structure**: Explains the purpose of each file in the project.
-- **Contributing**: Guidelines for contributing to the project.
-
-Feel free to adjust the README based on specific details of your project.
